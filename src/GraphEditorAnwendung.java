@@ -38,7 +38,7 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
     // canvas
     private int x = 60;
     private int y = 100;
-    private int w = 980;
+    private int w = 780;
     private int h = 250;
     private List<DrawNode> derPfad;
     private DrawNode derStart;
@@ -50,29 +50,29 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
      */
     public GraphEditorAnwendung() {
         //Initialisierung der Oberklasse
-        super(1181, 703, true);
+        super(981, 703, true);
         bildschirm().zeichneDich();
         hatStift = new Buntstift();
 
         derGraph = ImportExport.tempGraph();
         init();
 
-        hatEtikettGraphEditor = new Etikett(500, 50, 200, 25, "Graph Editor (Node Mode)");
+        hatEtikettGraphEditor = new Etikett(300, 50, 200, 25, "Graph Editor (Node Mode)");
         hatEtikettGraphEditor.setzeAusrichtung(Ausrichtung.MITTE);
         hatZeilenbereichAdjazenzMatrixCSV = new
-                Zeilenbereich(60, 375, 950, 300,
+                Zeilenbereich(60, 375, 750, 300,
                 ImportExport.graphToCSV(derGraph));
         Knopf hatKnopfBeenden = new
-                Knopf(1040, 650, 100, 25, "Beenden");
+                Knopf(840, 650, 100, 25, "Beenden");
         hatKnopfBeenden.setzeBearbeiterGeklickt("hatKnopfBeendenGeklickt");
         Knopf hatKnopfZeichnen = new
-                Knopf(1040, 475, 100, 25, "Kräfte");
+                Knopf(840, 475, 100, 25, "Kräfte");
         hatKnopfZeichnen.setzeBearbeiterGeklickt("hatKnopfZeichnenGeklickt");
         Knopf hatKnopfSpeichern = new
-                Knopf(1040, 415, 100, 25, "Speichern");
+                Knopf(840, 415, 100, 25, "Speichern");
         hatKnopfSpeichern.setzeBearbeiterGeklickt("hatKnopfSpeichernGeklickt");
         Knopf hatKnopfLaden = new
-                Knopf(1040, 375, 100, 25, "Laden");
+                Knopf(840, 375, 100, 25, "Laden");
         hatKnopfLaden.setzeBearbeiterGeklickt("hatKnopfLadenGeklickt");
         bildschirm().zeichneDich();
         fuehreAus();
@@ -518,5 +518,4 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
             }
             draw();
         }
-    }
-}
+    }}

@@ -28,17 +28,6 @@ public class DjikstraNode {
         return shortestPath;
     }
 
-    public List<DrawNode> getPath() {
-        List<DrawNode> path;
-        if (hasPrev()) {
-            path = shortestPrev.getPath();
-        } else {
-            path = new List<DrawNode>();
-        }
-        path.append(getNode());
-        return path;
-    }
-
     public void makeFirst() {
         shortestPath = 0;
     }
@@ -51,8 +40,8 @@ public class DjikstraNode {
         return shortestPrev != null;
     }
 
-    public boolean isVisited() {
-        return isVisited;
+    public boolean isUnVisited() {
+        return !isVisited;
     }
 
     public void makeVisited() {

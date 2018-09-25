@@ -9,8 +9,8 @@ public class DrawNode
     private double vely = 0;
     private double accx = 0;
     private double accy = 0;
-    private double mass = 1;
-    private double damp = 0.001;
+    private static final double mass = 1;
+    private static final double damp = 0.001;
 
     /**
      * Konstruktor für Objekte der Klasse DrawNode
@@ -22,12 +22,6 @@ public class DrawNode
         posy = y;
     }
 
-    /**
-     * Anwendung der Simulation
-     * 
-     * @param  y    ein Beispielparameter für eine Methode
-     * @return        die Summe aus x und y
-     */
     public void simulate()
     {
         velx += accx;

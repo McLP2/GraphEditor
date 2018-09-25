@@ -1,6 +1,6 @@
 public class ImportExport
 {
-    public static Graph tempGraph() {
+    static Graph tempGraph() {
         Graph einGraph = new Graph();
         
         GraphNode dm = new GraphNode("Dortmund");
@@ -28,7 +28,7 @@ public class ImportExport
         
         einGraph.addEdge(gs, dm, 236);
         einGraph.addEdge(gs, wi, 207);
-        einGraph.addEdge(gs, ss, 076);
+        einGraph.addEdge(gs, ss, 76);
         einGraph.addEdge(gs, du, 231);
         einGraph.addEdge(gs, wp, 295);
         einGraph.addEdge(gs, rh, 132);
@@ -41,7 +41,7 @@ public class ImportExport
         einGraph.addEdge(wi, rh, 220);
         
         einGraph.addEdge(ss, dm, 298);
-        einGraph.addEdge(ss, gs, 076);
+        einGraph.addEdge(ss, gs, 76);
         einGraph.addEdge(ss, wi, 238);
         einGraph.addEdge(ss, du, 165);
         einGraph.addEdge(ss, wp, 246);
@@ -71,7 +71,7 @@ public class ImportExport
         return einGraph;
     }
     
-    public static String graphToCSV(Graph derGraph) {
+    static String graphToCSV(Graph derGraph) {
         String s = "";
         // zweil Listen für verschachtelte Iterationsmöglichkeiten
         List<GraphNode> graphList = derGraph.getNodes();
@@ -103,7 +103,7 @@ public class ImportExport
         return s;
     }
     
-    public static Graph csvToGraph(String befehlString) {
+    static Graph csvToGraph(String befehlString) {
         //Neuer Graph wird erzeugt
             Graph lGraph = new Graph();
             
@@ -112,8 +112,8 @@ public class ImportExport
             
             //String zwischenspeicher
             String aktString = befehlString;//Der String, der Stück für Stück verkleinert wird
-            String aktuellerKnoten = "";
-            String aktuelleZahl= "";
+            String aktuellerKnoten;
+            String aktuelleZahl;
             
             //Namen der ersten Zeile Speichern:
             for(int i =0;true;i++)//Gehe die Zeichen des aktStrings durch...
@@ -155,8 +155,7 @@ public class ImportExport
                         
                         aktString = aktString.substring(j+1);//Kürze den schon ausgewerteten Teil des Strings weg
 
-                        
-                        j=0;//Setze den Startwert der Zeichensuche zurück auf 0
+
                         Liste.toFirst();//Gehe die Spalten von Anfang an durch
                         for(j = 0;true;j++)//Filtere die einzelnen Gewichte der Kanten raus
                         {
@@ -165,7 +164,7 @@ public class ImportExport
                                 if(j>0)//Überprüfe ob es noch eine Zahl ist(Falls eine Feld lehr ist : ,,)
                                 {
                                     aktuelleZahl = aktString.substring(0,j);//Speichere die letzte Zahl der Zeile
-                                    Double zahlInDouble = new Double(aktuelleZahl);//Konvertiere die Zahl
+                                    double zahlInDouble = Double.parseDouble(aktuelleZahl);//Konvertiere die Zahl
                             
                                     lGraph.addEdge(lGraph.getNode(aktuellerKnoten),lGraph.getNode(Liste.getContent()),zahlInDouble);//Bilde die Kante mit dem Aktuellen Knoten der Zeile, dem Aktuellen Knoten der Spalte (aus der Liste) und der aktuellen Zahl
                                 }
@@ -178,7 +177,7 @@ public class ImportExport
                                 {
                                     aktuelleZahl = aktString.substring(0,j);//Speichere die Zahl
                                     
-                                    Double zahlInDouble = new Double(aktuelleZahl);//Konvertiere die Zahl
+                                    double zahlInDouble = Double.parseDouble(aktuelleZahl);//Konvertiere die Zahl
                             
                                     lGraph.addEdge(lGraph.getNode(aktuellerKnoten),lGraph.getNode(Liste.getContent()),zahlInDouble);//Bilde die Kante mit dem Aktuellen Knoten der Zeile, dem Aktuellen Knoten der Spalte (aus der Liste) und der aktuellen Zahl
                                 }

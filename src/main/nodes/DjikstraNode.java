@@ -1,4 +1,4 @@
-package nodes;
+package main.nodes;
 
 public class DjikstraNode {
     // data
@@ -9,7 +9,7 @@ public class DjikstraNode {
     private boolean isVisited = false;
 
     /**
-     * Konstruktor für Objekte der Klasse nodes.DrawNode
+     * Konstruktor für Objekte der Klasse main.nodes.DrawNode
      */
     public DjikstraNode(DrawNode node) {
         representingNode = node;

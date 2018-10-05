@@ -1,4 +1,4 @@
-package nodes;
+package main.nodes;
 
 import nrw.graph.GraphNode;
 
@@ -17,7 +17,7 @@ public class DrawNode
     private static final double damp = 0.001;
 
     /**
-     * Konstruktor für Objekte der Klasse nodes.DrawNode
+     * Konstruktor für Objekte der Klasse main.nodes.DrawNode
      */
     public DrawNode(double x, double y, GraphNode node) {
         representingNode = node;

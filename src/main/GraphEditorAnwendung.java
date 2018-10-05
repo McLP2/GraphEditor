@@ -1,6 +1,8 @@
+package main;
+
 import nrw.graph.*;
 import nrw.list.*;
-import nodes.*;
+import main.nodes.*;
 import sum.komponenten.*;
 import sum.ereignis.*;
 

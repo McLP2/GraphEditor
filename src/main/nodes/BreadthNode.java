@@ -1,6 +1,4 @@
-package nodes;
-
-import nrw.list.List;
+package main.nodes;
 
 public class BreadthNode {
     // data
@@ -9,7 +7,7 @@ public class BreadthNode {
     private boolean isVisited = false;
 
     /**
-     * Konstruktor für Objekte der Klasse nodes.DrawNode
+     * Konstruktor für Objekte der Klasse main.nodes.DrawNode
      */
     public BreadthNode(DrawNode node) {
         representingNode = node;

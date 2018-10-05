@@ -1,3 +1,5 @@
+package main;
+
 import nrw.graph.Graph;
 import nrw.graph.GraphNode;
 import nrw.list.List;

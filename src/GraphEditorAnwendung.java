@@ -1,3 +1,6 @@
+import nrw.graph.*;
+import nrw.list.*;
+import nodes.*;
 import sum.komponenten.*;
 import sum.ereignis.*;
 
@@ -31,6 +34,7 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
     private int sY;
     private boolean creatingEdge;
     private boolean findingPath;
+    private boolean findingBreath;
     // physics
     private static final double k = 0.0001; // spring strength
     private static final double r = 20; // radius for nodes
@@ -223,7 +227,11 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
             hatStift.schreibeText(aGraphArray.getNode().getName());
         }
         if (drawPath) {
-            if (!(derPfad.first == derPfad.last)) {
+            derPfad.toFirst();
+            DrawNode first = derPfad.getContent();
+            derPfad.toLast();
+            DrawNode last = derPfad.getContent();
+            if (!(first == last)) {
                 // nodes
                 derPfad.toFirst();
                 while (derPfad.hasAccess()) {
@@ -316,6 +324,22 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
                         sY = py;
                     }
                     findingPath = true;
+                    draw();
+                    hatStift.setzeFuellMuster(0);
+                    hatStift.setzeFarbe(Farbe.rgb(255, 127, 50));
+                    hatStift.bewegeBis(sX, sY);
+                    hatStift.runter();
+                    hatStift.bewegeBis(px, py);
+                    hatStift.hoch();
+                    bildschirm().zeichneDich();
+                    break;
+                case BREADTH:
+                    if (!findingBreath) {
+                        // save first pos for drawing mouse-line
+                        sX = px;
+                        sY = py;
+                    }
+                    findingBreath = true;
                     draw();
                     hatStift.setzeFuellMuster(0);
                     hatStift.setzeFarbe(Farbe.rgb(255, 127, 50));
@@ -432,10 +456,84 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
             if (n2 != null && n1 != n2) {
                 djikstra(n1, n2);
             }
+        } else if (findingBreath) {
+            GraphNode n2 = null;
+            GraphNode n1 = activeNode.getNode();
+            for (DrawNode aGraphArray : graphArray) {
+                double dx = aGraphArray.getPosX() - px;
+                double dy = aGraphArray.getPosY() - py;
+                if (dx * dx + dy * dy < r * r) {
+                    n2 = aGraphArray.getNode();
+                }
+            }
+            if (n2 != null && n1 != n2) {
+                breath(n1, n2);
+            }
         }
         activeNode = null;
         creatingEdge = false;
         findingPath = false;
+        findingBreath = false;
+        draw();
+    }
+
+    private void breath(GraphNode n1, GraphNode n2) {
+        DjikstraNode start = new DjikstraNode(new DrawNode(0, 0, n1)); // temp
+        DjikstraNode end = new DjikstraNode(new DrawNode(0, 0, n2)); // temp
+        DjikstraNode currentNode;
+        DjikstraNode[] djikstraNodes = new DjikstraNode[graphArray.length];
+        for (int i = 0; i < djikstraNodes.length; i++) {
+            DjikstraNode node = new DjikstraNode(graphArray[i]);
+            if (graphArray[i].getNode() == n1) {
+                start = node;
+            } else if (graphArray[i].getNode() == n2) {
+                end = node;
+            }
+            djikstraNodes[i] = node;
+        }
+
+        start.makeFirst();
+        currentNode = start;
+        while (currentNode != null) {
+            for (DjikstraNode djikstraNode : djikstraNodes) {
+                GraphNode currentGraphNode = currentNode.getNode().getNode();
+                GraphNode djikstraGraphNode = djikstraNode.getNode().getNode();
+                // every non marked neighbour of current
+                if (djikstraNode.isUnVisited() && derGraph.hasEdge(currentGraphNode, djikstraGraphNode)) {
+                    // setPath
+                    double len = currentNode.getPathLength() +
+                            derGraph.getEdgeWeight(currentGraphNode, djikstraGraphNode);
+                    djikstraNode.addPath(currentNode, len);
+                }
+            }
+            // mark current
+            currentNode.makeVisited();
+            // current = smallest non marked non infinite
+            currentNode = null;
+            double minlen = Integer.MAX_VALUE;
+            for (DjikstraNode djikstraNode : djikstraNodes) {
+                if (djikstraNode.isUnVisited() &&
+                        djikstraNode.getPathLength() < minlen &&
+                        djikstraNode.getPathLength() != Integer.MAX_VALUE) {
+                    currentNode = djikstraNode;
+                    minlen = currentNode.getPathLength();
+                }
+            }
+            if (currentNode != null && end.getPathLength() <= currentNode.getPathLength()) {
+                break;
+            }
+        }
+        currentNode = end;
+        List<DrawNode> path = new List<DrawNode>();
+        while (currentNode.hasPrev()) {
+            path.append(currentNode.getNode());
+            currentNode = currentNode.getPrev();
+        }
+        path.append(currentNode.getNode());
+
+        derPfad = path;
+        derStart = start.getNode();
+        drawPath = true;
         draw();
     }
 
@@ -512,9 +610,12 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
                     hatEtikettGraphEditor.setzeInhalt("Graph Editor (Djikstra's Mode)");
                     break;
                 case DJIKSTRA:
+                    mode = Mode.BREADTH;
+                    hatEtikettGraphEditor.setzeInhalt("Graph Editor (Breadth Mode)");
+                    break;
+                case BREADTH:
                     mode = Mode.EDIT_NODES;
                     hatEtikettGraphEditor.setzeInhalt("Graph Editor (Node Mode)");
-                    break;
             }
             draw();
         }

@@ -1,11 +1,14 @@
- 
+package nrw.graph;
+
+import nrw.list.List;
+
 /**
  * <p>Materialien zu den zentralen
  * Abiturpruefungen im Fach Informatik ab 2012 in 
  * Nordrhein-Westfalen.</p>
  * <p>Klasse Graph</p>
- * <p>Objekte der Klasse Graph sind ungerichtete, gewichtete Graphen. 
- * Der Graph besteht aus Knoten, die Objekte der Klasse GraphNode sind, 
+ * <p>Objekte der Klasse Graph sind ungerichtete, gewichtete Graphen.
+ * Der Graph besteht aus Knoten, die Objekte der Klasse GraphNode sind,
  * und Kanten, die Knoten miteinander verbinden. 
  * Die Knoten werden ueber ihren Namen eindeutig identifiziert.</p>
  * 
@@ -17,11 +20,11 @@
 public class Graph {
   private List<GraphNode> nodeList; 
   /**
-   * Ein neuer Graph wird erzeugt. 
+   * Ein neuer Graph wird erzeugt.
    * Er enthaelt noch keine Knoten.
    */
-  public Graph() { 
-    nodeList = new List<GraphNode> ();
+  public Graph() {
+    nodeList = new List<GraphNode>();
   }
 
   /**
@@ -37,7 +40,7 @@ public class Graph {
    * Der Knoten pNode wird dem Graphen hinzugefuegt. 
    * Falls bereits ein Knoten mit gleichem Namen im 
    * Graphen existiert, wird dieser Knoten nicht eingefuegt. 
-   * Falls pNode null ist, veraendert sich der Graph nicht. 
+   * Falls pNode null ist, veraendert sich der Graph nicht.
    * @param pNode neuer Knoten
    */
   public void addNode(GraphNode pNode) {

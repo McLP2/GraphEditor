@@ -34,7 +34,7 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
     private int sY;
     private boolean creatingEdge;
     private boolean findingPath;
-    private boolean findingBreath;
+    private boolean findingBreadth;
     // physics
     private static final double k = 0.0001; // spring strength
     private static final double r = 20; // radius for nodes
@@ -334,12 +334,12 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
                     bildschirm().zeichneDich();
                     break;
                 case BREADTH:
-                    if (!findingBreath) {
+                    if (!findingBreadth) {
                         // save first pos for drawing mouse-line
                         sX = px;
                         sY = py;
                     }
-                    findingBreath = true;
+                    findingBreadth = true;
                     draw();
                     hatStift.setzeFuellMuster(0);
                     hatStift.setzeFarbe(Farbe.rgb(255, 127, 50));
@@ -414,6 +414,10 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
         return JOptionPane.showInputDialog(msg);
     }
 
+    private void showMessageDialog(String msg) {
+        JOptionPane.showMessageDialog(null, msg);
+    }
+
     private double holeZahl(String msg) {
         try {
             String ans = JOptionPane.showInputDialog(msg);
@@ -456,7 +460,7 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
             if (n2 != null && n1 != n2) {
                 djikstra(n1, n2);
             }
-        } else if (findingBreath) {
+        } else if (findingBreadth) {
             GraphNode n2 = null;
             GraphNode n1 = activeNode.getNode();
             for (DrawNode aGraphArray : graphArray) {
@@ -467,74 +471,56 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
                 }
             }
             if (n2 != null && n1 != n2) {
-                breath(n1, n2);
+                boolean connected = breadth(n1, n2);
+                if (connected) {
+                    showMessageDialog("Connection Found.");
+                } else {
+                    showMessageDialog("Disconnected.");
+                }
+                draw();
             }
         }
         activeNode = null;
         creatingEdge = false;
         findingPath = false;
-        findingBreath = false;
+        findingBreadth = false;
         draw();
     }
 
-    private void breath(GraphNode n1, GraphNode n2) {
-        DjikstraNode start = new DjikstraNode(new DrawNode(0, 0, n1)); // temp
-        DjikstraNode end = new DjikstraNode(new DrawNode(0, 0, n2)); // temp
-        DjikstraNode currentNode;
-        DjikstraNode[] djikstraNodes = new DjikstraNode[graphArray.length];
-        for (int i = 0; i < djikstraNodes.length; i++) {
-            DjikstraNode node = new DjikstraNode(graphArray[i]);
+    private boolean breadth(GraphNode n1, GraphNode n2) {
+        BreadthNode start = new BreadthNode(new DrawNode(0, 0, n1)); // temp
+        BreadthNode end = new BreadthNode(new DrawNode(0, 0, n2)); // temp
+        BreadthNode currentNode;
+        BreadthNode[] breathNodes = new BreadthNode[graphArray.length];
+        for (int i = 0; i < breathNodes.length; i++) {
+            BreadthNode node = new BreadthNode(graphArray[i]);
             if (graphArray[i].getNode() == n1) {
                 start = node;
             } else if (graphArray[i].getNode() == n2) {
                 end = node;
             }
-            djikstraNodes[i] = node;
+            breathNodes[i] = node;
         }
+        List<BreadthNode> nextNodes = new List<BreadthNode>();
+        nextNodes.append(start);
+        nextNodes.toFirst();
 
-        start.makeFirst();
-        currentNode = start;
-        while (currentNode != null) {
-            for (DjikstraNode djikstraNode : djikstraNodes) {
-                GraphNode currentGraphNode = currentNode.getNode().getNode();
-                GraphNode djikstraGraphNode = djikstraNode.getNode().getNode();
-                // every non marked neighbour of current
-                if (djikstraNode.isUnVisited() && derGraph.hasEdge(currentGraphNode, djikstraGraphNode)) {
-                    // setPath
-                    double len = currentNode.getPathLength() +
-                            derGraph.getEdgeWeight(currentGraphNode, djikstraGraphNode);
-                    djikstraNode.addPath(currentNode, len);
-                }
-            }
-            // mark current
+        while (nextNodes.hasAccess()) {
+            nextNodes.toFirst();
+            currentNode = nextNodes.getContent();
+            nextNodes.remove();
             currentNode.makeVisited();
-            // current = smallest non marked non infinite
-            currentNode = null;
-            double minlen = Integer.MAX_VALUE;
-            for (DjikstraNode djikstraNode : djikstraNodes) {
-                if (djikstraNode.isUnVisited() &&
-                        djikstraNode.getPathLength() < minlen &&
-                        djikstraNode.getPathLength() != Integer.MAX_VALUE) {
-                    currentNode = djikstraNode;
-                    minlen = currentNode.getPathLength();
+            for (BreadthNode breadthNode : breathNodes) {
+                if (breadthNode.isUnVisited() &&
+                        derGraph.hasEdge(currentNode.getNode().getNode(), breadthNode.getNode().getNode())) {
+                    if (breadthNode == end) {
+                        return true;
+                    }
+                    nextNodes.append(breadthNode);
                 }
             }
-            if (currentNode != null && end.getPathLength() <= currentNode.getPathLength()) {
-                break;
-            }
         }
-        currentNode = end;
-        List<DrawNode> path = new List<DrawNode>();
-        while (currentNode.hasPrev()) {
-            path.append(currentNode.getNode());
-            currentNode = currentNode.getPrev();
-        }
-        path.append(currentNode.getNode());
-
-        derPfad = path;
-        derStart = start.getNode();
-        drawPath = true;
-        draw();
+        return false;
     }
 
     private void djikstra(GraphNode n1, GraphNode n2) {
@@ -619,4 +605,5 @@ public class GraphEditorAnwendung extends Ereignisanwendung {
             }
             draw();
         }
-    }}
+    }
+}
